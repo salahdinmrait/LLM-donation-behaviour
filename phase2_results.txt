@@ -1,0 +1,125 @@
+[1] "--- Engagement Model Summary ---"
+Cumulative Link Mixed Model fitted with the Laplace approximation
+
+formula: rating ~ gender + content_source + (1 | participant_id) + (1 |  
+    post_id)
+data:    df
+
+ link  threshold nobs logLik   AIC     niter     max.grad cond.H 
+ logit flexible  4350 -2935.09 5882.18 325(2215) 8.83e-05 3.1e+01
+
+Random effects:
+ Groups         Name        Variance Std.Dev.
+ participant_id (Intercept) 5.4489   2.334   
+ post_id        (Intercept) 0.2884   0.537   
+Number of groups:  participant_id 725,  post_id 562 
+
+Coefficients:
+                  Estimate Std. Error z value Pr(>|z|)    
+genderFemale        0.3134     0.2043   1.534    0.125    
+content_sourceLLM   0.4550     0.1030   4.415 1.01e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Threshold coefficients:
+                Estimate Std. Error z value
+Dislike|Neutral  -3.7070     0.1820 -20.367
+Neutral|Like     -1.0972     0.1611  -6.812
+[1] "\n--- Odds Ratios ---"
+  Dislike|Neutral      Neutral|Like      genderFemale content_sourceLLM 
+       0.02455048        0.33380209        1.36805476        1.57613598 
+[1] "\n--- Confidence Intervals ---"
+                       2.5 %     97.5 %
+Dislike|Neutral   0.01718415 0.03507452
+Neutral|Like      0.24343781 0.45770964
+genderFemale      0.91672765 2.04158108
+content_sourceLLM 1.28790234 1.92887656
+[1] "\n\n--- Persuasiveness Model Summary ---"
+Linear mixed model fit by REML ['lmerMod']
+Formula: persuasiveness ~ gender + content_source + (1 | participant_id) +  
+    (1 | post_id)
+   Data: df
+
+REML criterion at convergence: 14237.8
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-4.6593 -0.4403  0.0717  0.5052  3.9591 
+
+Random effects:
+ Groups         Name        Variance Std.Dev.
+ participant_id (Intercept) 1.69306  1.3012  
+ post_id        (Intercept) 0.05233  0.2288  
+ Residual                   0.99806  0.9990  
+Number of obs: 4350, groups:  participant_id, 725; post_id, 562
+
+Fixed effects:
+                  Estimate Std. Error t value
+(Intercept)        4.85922    0.07570  64.191
+genderFemale       0.06190    0.10162   0.609
+content_sourceLLM  0.20136    0.04016   5.014
+
+Correlation of Fixed Effects:
+            (Intr) gndrFm
+genderFemal -0.672       
+cntnt_srLLM -0.265 -0.001
+[1] "\n--- Coefficients (Fixed Effects) ---"
+      (Intercept)      genderFemale content_sourceLLM 
+       4.85921598        0.06189651        0.20136381 
+[1] "\n--- Confidence Intervals ---"
+                       2.5 %    97.5 %
+(Intercept)        4.7108484 5.0075836
+genderFemale      -0.1372724 0.2610654
+content_sourceLLM  0.1226445 0.2800831
+[1] "\n\n--- Donation Model Summary (Hurdle) ---"
+ Family: gaussian  ( identity )
+Formula:          
+donation_amount ~ gender + content_source + (1 | participant_id) +  
+    (1 | post_id)
+Zero inflation:                   ~gender + content_source
+Data: df
+
+      AIC       BIC    logLik -2*log(L)  df.resid 
+ -22406.8  -22349.4   11212.4  -22424.8      4341 
+
+Random effects:
+
+Conditional model:
+ Groups         Name        Variance  Std.Dev. 
+ participant_id (Intercept) 2.098e-13 4.581e-07
+ post_id        (Intercept) 1.357e-05 3.683e-03
+ Residual                   3.275e-04 1.810e-02
+Number of obs: 4350, groups:  participant_id, 725; post_id, 562
+
+Dispersion estimate for gaussian family (sigma^2): 0.000327 
+
+Conditional model:
+                   Estimate Std. Error z value Pr(>|z|)    
+(Intercept)       0.0116791  0.0005706  20.470   <2e-16 ***
+genderFemale      0.0012545  0.0005643   2.223   0.0262 *  
+content_sourceLLM 0.0017840  0.0007017   2.542   0.0110 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Zero-inflation model:
+                  Estimate Std. Error z value Pr(>|z|)
+(Intercept)        -21.627   1494.508  -0.014    0.988
+genderFemale        -1.412   3083.475   0.000    1.000
+content_sourceLLM   -1.410   3084.950   0.000    1.000
+[1] "\n--- Conditional Model (Amount) Coefficients ---"
+      (Intercept)      genderFemale content_sourceLLM 
+      0.011679052       0.001254543       0.001783968 
+[1] "\n--- Conditional Model CI ---"
+                               2.5 %       97.5 %      Estimate
+cond.(Intercept)        1.056078e-02 1.279733e-02   0.011679052
+cond.genderFemale       1.484698e-04 2.360616e-03   0.001254543
+cond.content_sourceLLM  4.086931e-04 3.159243e-03   0.001783968
+zi.(Intercept)         -2.950810e+03 2.907556e+03 -21.626971497
+zi.genderFemale        -6.044911e+03 6.042087e+03  -1.412046200
+zi.content_sourceLLM   -6.047802e+03 6.044981e+03  -1.410336341
+[1] "\n--- Zero-Inflation Model (Prob of 0) Coefficients ---"
+      (Intercept)      genderFemale content_sourceLLM 
+       -21.626971         -1.412046         -1.410336 
+[1] "\n--- Zero-Inflation Model Odds Ratios (Prob of 0) ---"
+      (Intercept)      genderFemale content_sourceLLM 
+     4.050658e-10      2.436442e-01      2.440612e-01 

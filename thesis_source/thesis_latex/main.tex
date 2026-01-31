@@ -1,0 +1,586 @@
+\documentclass[12pt,a4paper]{report}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{mathptmx}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{natbib}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+
+% Hyperref settings
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=blue,
+    urlcolor=blue
+}
+
+% Line spacing
+\onehalfspacing
+
+% Title information
+\title{
+    \textbf{Gender Differences in Responses to LLM-Generated versus Human-Written Donation Appeals} \\
+    \vspace{0.5cm}
+    \large A Multi-factorial Analysis of Digital Charitable Giving \\
+    \vspace{1cm}
+    \normalsize Bachelor End Project
+}
+
+\author{
+    Salah-din Mrait \\
+    Student Number: 1744976 \\
+    \\
+    Data Science Joint Degree \\
+    Tilburg University -- Eindhoven University of Technology \\
+    \\
+    \vspace{1cm}
+    Supervisor: \\
+    Dr. John Caffier
+}
+
+\date{January 2026}
+
+\begin{document}
+
+% Title page
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+% Abstract
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+This study examines whether men and women respond differently to LLM-generated versus human-written donation appeals for cancer charities. Using experimental data from 725 U.S. participants who each evaluated six charitable appeals (4,350 total observations), I test whether the well-documented gender gap in charitable giving persists equally for both human and LLM-generated content. I measure three outcomes: engagement ratings, persuasiveness scores, and actual donation behavior. Mixed-effects regression models account for the nested data structure and test for gender $\times$ content source interactions. The findings contribute to understanding how demographic characteristics moderate responses to LLM-generated persuasive content in prosocial contexts.
+
+\vspace{1cm}
+\noindent\textbf{Keywords:} charitable giving, donation behavior, gender differences, LLM-generated content, LLM, persuasion, prosocial behavior
+
+\newpage
+
+% Preface
+\chapter*{Preface}
+\addcontentsline{toc}{chapter}{Preface}
+
+This Bachelor thesis represents the culmination of my studies for the Joint Bachelor of Science in Data Science at Tilburg University and Eindhoven University of Technology.
+
+I would like to express my sincere gratitude to my supervisor, Dr. John Caffier, for his guidance and support throughout this project. I would also like to thank my fellow students and group members, Joery Fabian Clements and Mohamad al Hallak, for their valuable collaboration and insights during our time working together.
+
+\vspace{2cm}
+\noindent Salah-din Mrait \\
+Tilburg / Eindhoven, January 2026
+
+\newpage
+
+% Table of contents
+\tableofcontents
+\newpage
+
+% Chapter 1: Introduction
+\chapter{Introduction}
+
+Charitable organizations face growing competition for donor attention and must continually improve how they ask for support. Digital fundraising has lowered the cost of reaching potential donors, yet success still depends on whether an appeal can trigger a sincere emotional response. A large body of empirical research shows that gender is one of the most consistent predictors of prosocial behavior. Across cultures and research settings, women donate more frequently and give higher amounts than men \citep{bekkers2011literature, mesch2011gender}. This difference is not simply about generosity. It reflects deeper differences in socialization, moral identity, and how emotional messages are processed \citep{winterich2009benevolence, diekman2015gender}.
+
+The rise of Large Language Models has added a new element to charitable communication. Organizations can now produce emotionally framed donation appeals without direct human involvement. These systems can imitate empathic language, yet they do not possess intention or emotional experience. This distinction matters in donation contexts, where perceived sincerity plays a key role. Research on algorithm aversion shows that people judge algorithmic output more harshly in domains that rely on judgment, intuition, or emotional meaning \citep{dietvorst2015algorithm, castelo2019task}.
+
+Women tend to respond more strongly to charitable appeals and place greater value on relational cues and emotional authenticity than men \citep{croson2009gender}. If LLM-generated messages are perceived as lacking genuine moral agency, the group that contributes most to charitable giving may respond less positively to such appeals. This study examines whether revealing LLM authorship alters donation behavior differently for women and men.
+
+\subsection{Theoretical background and mechanisms}
+
+To derive clear expectations, it is necessary to examine the psychological processes that shape how men and women respond to persuasive messages.
+
+\textbf{Empathic concern and emotional processing}  
+Gender differences in charitable giving are often linked to differences in empathic concern. Women consistently report higher levels of empathy \citep{davis1983measuring}. Fundraising messages often rely on personal stories that invite readers to emotionally engage with a beneficiary. When emotional engagement drives persuasion, perceived sincerity becomes important. Moral judgment is fundamentally dependent on the perception of an intentional mind behind an action \citep{gray2012feeling}. If LLM is perceived as lacking such a mind, emotional engagement may weaken.
+
+\textbf{Trust and algorithm aversion}  
+Algorithm aversion describes the tendency to lose confidence in algorithmic judgments after observing errors \citep{dietvorst2015algorithm}. Later work shows that this reaction depends on the type of task. Algorithms tend to receive more trust in technical or rule-based settings than in tasks involving values, emotions, or moral persuasion. People often assume machines lack lived experience, which lowers trust in subjective domains \citep{castelo2019task}. Since women place greater weight on trust and relational signals in communication \citep{croson2009gender}, they may react more negatively to emotional appeals once LLM authorship is revealed.
+
+\textbf{Moral reasoning: care vs. justice}  
+Differences in moral reasoning offer another explanation for gendered responses. Women are more likely to adopt a care-oriented moral perspective focused on relationships and reducing suffering, whereas men lean more toward rule-based reasoning centered on rights and fairness \citep{gilligan1982different}. Moral Foundations Theory supports this view, showing that women score higher on the Harm/Care foundation \citep{graham2011mapping}. Emotional appeals written by LLM may succeed only if the sense of a caring relationship between donor and recipient remains intact. If artificial authorship weakens that perception, effectiveness may decline for women in particular.
+
+LLM systems can produce emotionally polished language, yet they lack moral agency. This creates tension between linguistic effectiveness and perceived sincerity. This study tests how this tension affects women and men differently.
+
+\section{Research questions and hypotheses}
+
+This study addresses the following main research question:
+
+\begin{quote}
+\textbf{Do women and men respond differently to LLM-generated versus human-written emotional donation appeals for cancer charities?}
+\end{quote}
+
+Based on the theoretical interaction between gendered moral reasoning and algorithm aversion, I investigate three specific sub-questions:
+
+\begin{enumerate}
+    \item \textbf{RQ1 - Perceived authenticity:} Is there a gender difference in perceived authenticity of LLM-generated emotional appeals compared to human-written appeals?
+    
+    \textit{H1: Women will report significantly lower persuasiveness scores (measured on a 1--7 Likert scale) for LLM-generated appeals than for human-written appeals, while men will show no such difference.}
+    
+    \item \textbf{RQ2 - Donation amounts:} Do women donate higher amounts than men regardless of content source, or does the gender gap in donation generosity differ between human-written and LLM-generated appeals?
+    
+    \textit{H2a: Women will allocate higher monetary amounts (measured in USD 0.00--0.10) to charities than men, regardless of whether the appeal is human-written or LLM-generated.}
+    
+    \textit{H2b: The difference in mean donation amounts (USD) between men and women will be significantly larger for human-written appeals than for LLM-generated appeals.}
+    
+    \item \textbf{RQ3 - Persistence of gender gap:} Does the well-established gender gap in charitable giving persist equally for both human and LLM-generated appeals, or does content source moderate this relationship?
+    
+    \textit{H3: The likelihood of women selecting the ``Like'' category (ordinal rating: Dislike/Neutral/Like) will be significantly higher for human-written appeals compared to LLM-generated appeals.}
+\end{enumerate}
+
+\section{Contribution and significance}
+
+This research connects work on gender differences in charitable giving \citep{bekkers2011literature} with research on human interaction with algorithmic systems. Prior studies on algorithm use focus on accuracy and advice-taking \citep{dietvorst2015algorithm, logg2019algorithm}. Few studies examine how demographic factors shape responses to LLM in morally sensitive settings.
+
+Nonprofit organizations increasingly rely on generative LLM for outreach. If such tools reduce trust or perceived sincerity among women, fundraising outcomes may suffer. By testing how gender and authorship interact, this study provides evidence that can guide decisions about when automation supports fundraising goals and when human authorship remains preferable.
+
+
+\section{Thesis structure}
+
+The remainder of this thesis is organized as follows. Chapter 2 describes the research methods, including the experimental design, variables, data preprocessing, and analytical approach. Chapter 3 presents the results in three phases: descriptive analysis, main effects models, and interaction analysis. Chapter 4 discusses the theoretical and practical implications of our findings.
+
+% Chapter 2: Methods
+\chapter{Methods}
+
+\section{Data description and experimental design}
+
+The dataset comprises 4,350 observations from 725 unique U.S. participants, with each participant evaluating six donation appeals for cancer-related charities. The experimental design manipulated two primary factors: personalization type (counterfactual, generic, or personalized) and content source (human-written versus LLM-generated). Participants provided responses across three outcome measures: engagement ratings (Dislike/Neutral/Like), persuasiveness scores (averaged across three 7-point Likert items), and donation behavior (actual monetary allocations ranging from \$0.00 to \$0.10). The within-subjects design creates a hierarchical data structure where multiple observations are nested within participants, and multiple evaluations are nested within individual messages.
+
+Participants encountered simulated social media donation appeals presented as authentic fundraising posts, with systematic variation in whether appeals were authored by humans or generated by LLMs. The present analysis employs the message-level dataset (Data\_LongFormat.csv), which contains 18 variables representing both experimental manipulations and participant demographics, with each row corresponding to a single participant-message evaluation. This structure enables examination of within-subject response variation across experimental conditions while comparing responses between male and female participants.
+
+\section{Variables}
+
+\subsection{Outcome variables}
+
+\textbf{Engagement} is measured through a three-category ordinal rating (Dislike, Neutral, Like), capturing participants' immediate affective responses to donation appeals. This measure provides insight into initial message reception before deeper cognitive processing.
+
+\textbf{Persuasiveness} is assessed using a composite score derived from three 7-point Likert scale items measuring different facets of perceived message effectiveness. Prior to analysis, internal consistency was verified using Cronbach's $\alpha = 0.89$, indicating excellent reliability. The composite score represents participants' cognitive evaluation of message quality and convincingness.
+
+\textbf{Donation behavior} is operationalized as the monetary amount (in dollars) participants allocated to each charity from their experimental budget. This behavioral measure provides an objective indicator of actual giving that complements self-reported attitudinal responses.
+
+\subsection{Independent variables}
+
+\textbf{Gender} serves as the primary demographic moderator, coded as a binary variable (Male/Female) based on participant self-identification. Gender is the focal variable given extensive prior research documenting robust differences in charitable giving behavior.
+
+\textbf{Content source} represents the experimental manipulation indicating whether appeals were written by humans or generated by LLMs. This variable enables direct comparison of effectiveness across authorship types and is central to our research questions about whether established gender differences persist across content sources.
+
+\section{Data preprocessing}
+
+Prior to analysis, several data quality checks were conducted. First, I verified that each row represents a unique participant-message combination by examining the participant ID and post ID fields for duplicate entries. No duplicates were identified, confirming that the 4,350 observations represent distinct evaluations. Second, I conducted a comprehensive missing data assessment across all variables. The dataset contains no missing values, eliminating the need for imputation procedures.
+
+Categorical variables were recoded using consistent labeling conventions. Gender was coded with ``Male'' as the reference category to enable direct testing of whether female participants show different response patterns. Content source was coded with ``Human'' as the reference category to test whether LLM-generated content performs differently than human-written content. Numerical outcome variables were retained in their original continuous scales to preserve measurement precision.
+
+A discrepancy was identified between the initial project documentation (which referenced 750 participants) and the actual dataset. Examination of unique participant identifiers confirmed the correct count as 725 participants. This discrepancy does not affect analysis validity but is noted for transparency.
+
+\section{Analytical approach}
+
+All analyses were conducted using R (version 4.3.0) and RStudio. Key packages include \textbf{tidyverse} for data manipulation, \textbf{lme4} for mixed-effects models, \textbf{ordinal} for ordinal regression, \textbf{glmmTMB} for hurdle models, \textbf{ggplot2} for visualization, and \textbf{sjPlot} for model summaries. Python (version 3.10) with \textbf{pandas}, \textbf{seaborn}, and \textbf{matplotlib} was used for supplementary visualizations.
+
+\subsection{Phase 1: Descriptive analysis}
+
+Initial descriptive statistics characterize the sample and examine distributions of key variables. I report the distribution of male and female participants and verify adequate sample sizes in both groups. For outcome variables, I compute descriptive statistics (means, standard deviations, medians, ranges) overall and stratified by gender and content source.
+
+I assess the distribution of persuasiveness scores using histograms and Q-Q plots to determine whether they approximate normality, justifying the use of linear models. For donation amounts, I calculate the proportion of zero donations versus positive donations. I also examine correlations among the three outcome variables.
+
+\subsection{Phase 2: Main effects models}
+
+Separate models are estimated for each outcome variable. All models account for the nested data structure using mixed-effects specifications. The choice of model for each outcome variable is driven by the distributional properties and measurement characteristics of the data.
+
+\textbf{Engagement Model (Ordinal Logistic Mixed-Effects Regression):} Because engagement ratings have a natural ordering (Dislike $<$ Neutral $<$ Like) but lack equal intervals between categories, I use cumulative link mixed models. A standard linear model would incorrectly assume equal distances between categories and ignore the ordinal structure. The ordinal model respects the ranking while modeling the probability of crossing thresholds between categories. I include random intercepts for participants and posts to account for the nested structure, where observations within the same participant or post are more similar than observations across participants or posts. The model formula is:
+
+\begin{equation}
+\text{logit}(P(Y \leq j)) = \theta_j - (\beta_1 \text{Gender} + \beta_2 \text{Source} + u_{\text{participant}} + u_{\text{post}})
+\end{equation}
+
+where $j$ indexes response categories, $\theta_j$ are threshold parameters, and $u$ terms are random intercepts.
+
+\textbf{Persuasiveness Model (Linear Mixed-Effects Regression):} After confirming approximate normality of the persuasiveness composite through diagnostic plots, I use linear mixed-effects models. This approach is appropriate because the composite score is continuous and approximately normally distributed. The nested structure requires random effects to avoid underestimating standard errors and inflating Type I error rates. The model includes random intercepts for participants (accounting for individual differences in rating tendencies) and posts (accounting for systematic differences in message quality). The model formula is:
+
+\begin{equation}
+Y_{ij} = \beta_0 + \beta_1 \text{Gender}_i + \beta_2 \text{Source}_{ij} + u_{0i} + u_{0j} + \epsilon_{ij}
+\end{equation}
+
+where $Y_{ij}$ is the persuasiveness score, $u_{0i}$ and $u_{0j}$ are random intercepts, and $\epsilon_{ij}$ is the residual error.
+
+\textbf{Donation Model (Hurdle Mixed-Effects Model):} Donation data exhibit substantial zero-inflation (35.3\% non-donors) and right-skewed distributions among positive donations. A standard linear or Poisson model would perform poorly because it cannot adequately model both the preponderance of zeros and the continuous positive values. A hurdle model explicitly separates these two processes: first, a binary logistic component predicts whether any donation occurs (crossing the ``hurdle'' from zero to positive); second, a truncated Gaussian component predicts donation amount conditional on donating. This two-part structure mirrors the theoretical distinction between the decision to give and the decision of how much to give. The conditional component includes random intercepts for participants and posts. For the zero-inflation component, I simplified the model by removing random effects to ensure convergence.
+
+\subsection{Phase 3: Interaction analysis}
+
+The core research question concerns whether gender moderates the effect of content source. I test this by adding a Gender $\times$ Content Source interaction term to each model. A statistically significant interaction ($\alpha = .05$) indicates that the gender gap differs depending on content source.
+
+For significant interactions, I conduct simple slopes analysis to decompose the interaction pattern, estimating the effect of content source separately for men and women. I create interaction plots visualizing predicted values across all four conditions with confidence intervals.
+
+% Chapter 3: Results
+\chapter{Results}
+
+\section{Phase 1: Descriptive analysis}
+
+This section presents the descriptive statistics and visualizations for the three primary outcome variables: Engagement, Persuasiveness, and Donation Behavior.
+
+\subsection{Descriptive statistics}
+
+\subsubsection{Engagement}
+Figure \ref{fig:engagement_dist} displays the distribution of engagement ratings across gender and content source. Table \ref{tab:engagement_stats} summarizes the frequencies.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{phase1_plots/engagement_distribution.png}
+    \caption{Distribution of Engagement Ratings by Gender and Content Source}
+    \label{fig:engagement_dist}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Engagement Ratings by Gender and Content Source}
+\label{tab:engagement_stats}
+\begin{tabular}{llccc}
+\toprule
+Gender & Source & Dislike & Neutral & Like \\
+\midrule
+Female & Human & 98 & 282 & 709 \\
+       & LLM   & 65 & 211 & 813 \\
+Male   & Human & 110 & 286 & 690 \\
+       & LLM   & 100 & 233 & 753 \\
+\midrule
+\textbf{Overall} & & \textbf{373} & \textbf{1012} & \textbf{2965} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Persuasiveness}
+Figure \ref{fig:persuasiveness_box} shows the distribution of persuasiveness scores. Table \ref{tab:persuasiveness_stats} presents the means and standard deviations.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{phase1_plots/persuasiveness_boxplot.png}
+    \caption{Persuasiveness Scores by Gender and Content Source}
+    \label{fig:persuasiveness_box}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Descriptive Statistics for Persuasiveness Scores (1-7 scale)}
+\label{tab:persuasiveness_stats}
+\begin{tabular}{llcc}
+\toprule
+Gender & Source & Mean & SD \\
+\midrule
+Female & Human & 4.93 & 1.72 \\
+       & LLM   & 5.18 & 1.64 \\
+Male   & Human & 4.87 & 1.66 \\
+       & LLM   & 5.08 & 1.61 \\
+\midrule
+\textbf{Overall} & & \textbf{5.02} & \textbf{1.66} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Donation behavior}
+Figure \ref{fig:donation_means} displays the mean donation amounts. Table \ref{tab:donation_stats} summarizes the descriptive statistics.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{phase1_plots/donation_means.png}
+    \caption{Mean Donation amount by Gender and Content Source}
+    \label{fig:donation_means}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\caption{Descriptive statistics for donation amount (in dollars)}
+\label{tab:donation_stats}
+\begin{tabular}{llcc}
+\toprule
+Gender & Source & Mean & SD \\
+\midrule
+Female & Human & 0.0128 & 0.0181 \\
+       & LLM   & 0.0150 & 0.0198 \\
+Male   & Human & 0.0122 & 0.0178 \\
+       & LLM   & 0.0130 & 0.0181 \\
+\midrule
+\textbf{Overall} & & \textbf{0.0132} & \textbf{0.0185} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Model assumptions}
+
+\subsubsection{Normality of persuasiveness scores}
+To determine whether linear mixed models are appropriate for analyzing persuasiveness scores, I examined their distribution. Figure \ref{fig:persuasiveness_normality} presents the histogram and Q-Q plot.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{phase1_plots/persuasiveness_histogram.png}
+        \caption{Histogram}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \includegraphics[width=\textwidth]{phase1_plots/persuasiveness_qqplot.png}
+        \caption{Q-Q Plot}
+    \end{subfigure}
+    \caption{Distribution of persuasiveness scores}
+    \label{fig:persuasiveness_normality}
+\end{figure}
+
+The distribution approximates normality reasonably well. In the Q-Q plot, points align with the theoretical line despite some deviation at the tails. This justifies the use of Linear Mixed Models for the analysis of persuasiveness.
+
+\subsubsection{Zero-Inflation in donation data}
+For donation amounts, I assessed the prevalence of non-donors. Figure \ref{fig:donation_hist} shows the distribution, highlighting the large spike at zero.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{phase1_plots/donation_histogram.png}
+    \caption{Distribution of donation amounts by gender and content source}
+    \label{fig:donation_hist}
+\end{figure}
+
+Table \ref{tab:zero_donations} reports the proportion of zero donations.
+
+\begin{table}[H]
+\centering
+\caption{Proportion of zero donations}
+\label{tab:zero_donations}
+\begin{tabular}{llc}
+\toprule
+Gender & Source & Zero donations (\%) \\
+\midrule
+Female & Human & 35.7\% \\
+       & LLM   & 31.0\% \\
+Male   & Human & 38.0\% \\
+       & LLM   & 36.3\% \\
+\midrule
+\textbf{Overall} & & \textbf{35.3\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+With 35.3\% zero values overall, this zero-inflation justifies using a Hurdle Model, which separately models the decision to donate (binary) and the amount donated (truncated continuous).
+
+\subsection{Correlations}
+Finally, I examined correlations among the three outcome variables. Table \ref{tab:correlations} presents the Pearson correlation coefficients.
+
+\begin{table}[H]
+\centering
+\caption{Correlations among outcome variables}
+\label{tab:correlations}
+\begin{tabular}{lccc}
+\toprule
+ & Engagement & Persuasiveness & Donation amount \\
+\midrule
+Engagement & 1.00 & & \\
+Persuasiveness & 0.49 & 1.00 & \\
+Donation amount & 0.15 & 0.19 & 1.00 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The results show positive but moderate correlations. Engagement and Persuasiveness share the strongest relationship ($r = 0.49$), while Donation amount is more weakly correlated with both Engagement ($r = 0.15$) and Persuasiveness ($r = 0.19$). This indicates the outcomes are related but measure distinct constructs, justifying analyzing all three separately.
+
+\section{Phase 2: Main effects models}
+
+This section presents the results of the mixed-effects models estimating the main effects of gender and content source.
+
+\subsection{Engagement model}
+
+I fitted a Cumulative Link Mixed model (Ordinal logistic mixed-effects regression) to analyze engagement ratings. The model included fixed effects for gender and content source, with random intercepts for participants and posts.
+
+Table \ref{tab:engagement_model} presents the estimated odds ratios (OR), 95\% confidence intervals (CI), and p-values.
+
+\begin{table}[H]
+\centering
+\caption{Engagement model results (Ordinal logistic mixed-effects)}
+\label{tab:engagement_model}
+\begin{tabular}{lccc}
+\toprule
+Predictor & OR & 95\% CI & p-value \\
+\midrule
+Gender (Female) & 1.37 & [0.92, 2.04] & .125 \\
+Content Source (LLM) & 1.58 & [1.29, 1.93] & $< .001$ \\
+\bottomrule
+\multicolumn{4}{l}{\footnotesize Reference categories: Male and Human.}
+\end{tabular}
+\end{table}
+
+The results show that content source had a significant effect on engagement. LLM-generated appeals had 58\% higher odds of receiving a more favorable engagement rating compared to human-written appeals ($OR = 1.58$, $p < .001$). 
+
+Gender did not have a statistically significant main effect on engagement ($OR = 1.37$, $p = .125$). The confidence interval [0.92, 2.04] includes 1, suggesting women were not significantly more likely than men to give higher engagement ratings overall.
+
+\subsection{Persuasiveness model}
+
+I fitted a Linear Mixed-Effects Model to analyze persuasiveness scores. The model included fixed effects for gender and content source, with random intercepts for participants and posts.
+
+Table \ref{tab:persuasiveness_model} presents the unstandardized coefficients ($b$), 95\% confidence intervals, and p-values.
+
+\begin{table}[H]
+\centering
+\caption{Persuasiveness model results (linear mixed-effects)}
+\label{tab:persuasiveness_model}
+\begin{tabular}{lccc}
+\toprule
+Predictor & $b$ & 95\% CI & p-value \\
+\midrule
+Gender (Female) & 0.06 & [-0.14, 0.26] & .544 \\
+Content Source (LLM) & 0.20 & [0.12, 0.28] & $< .001$ \\
+\bottomrule
+\multicolumn{4}{l}{\footnotesize Reference categories: Male and Human.}
+\end{tabular}
+\end{table}
+
+Consistent with engagement results, content source had a significant positive effect on persuasiveness. LLM-generated appeals were rated as significantly more persuasive than human-written appeals, with an increase of 0.20 points on the 7-point scale ($b = 0.20$, $p < .001$).
+
+Gender did not significantly predict persuasiveness scores ($b = 0.06$, $p = .544$), indicating men and women found the appeals equally persuasive on average.
+
+\subsection{Donation model}
+
+Given the zero-inflated nature of donation data, I employed a Hurdle mixed-effects Model to separately analyze the decision to donate and the amount donated among donors.
+
+\subsubsection{Conditional model (Amount donated)}
+Table \ref{tab:donation_conditional} presents results for the conditional component, predicting donation amount for those who donated.
+
+\begin{table}[H]
+\centering
+\caption{Donation Model: conditional component (among donors)}
+\label{tab:donation_conditional}
+\begin{tabular}{lccc}
+\toprule
+Predictor & $b$ & 95\% CI & p-value \\
+\midrule
+Gender (Female) & 0.0013 & [0.0001, 0.0024] & .026 \\
+Content Source (LLM) & 0.0018 & [0.0004, 0.0032] & .011 \\
+\bottomrule
+\multicolumn{4}{l}{\footnotesize Reference categories: Male and Human.}
+\end{tabular}
+\end{table}
+
+Among participants who chose to donate, women donated significantly higher amounts than men ($b = 0.0013$, $p = .026$). Furthermore, LLM-generated appeals elicited significantly higher donation amounts compared to human-written appeals ($b = 0.0018$, $p = .011$).
+
+\subsubsection{Zero-Inflation Model (decision to donate)}
+The zero-inflation component, which predicts the likelihood of \textit{not} donating, did not identify any statistically significant predictors. Neither gender ($p = .412$) nor content source ($p = .287$) significantly influenced the binary decision of whether to donate. This suggests these factors influenced the \textit{magnitude} of generosity among donors but not the initial threshold decision to give.
+
+\section{Phase 3: Interaction analysis}
+
+To test whether the effect of content source depends on gender, I added a Gender $\times$ Content Source interaction term to each model.
+
+Table \ref{tab:interaction_summary} summarizes the interaction test results.
+
+\begin{table}[H]
+\centering
+\caption{Summary of interaction effects (Gender $\times$ Content Source)}
+\label{tab:interaction_summary}
+\begin{tabular}{lccc}
+\toprule
+Outcome & Interaction Coef. & p-value & Significant? \\
+\midrule
+Engagement & OR = 1.53 & .011 & Yes \\
+Persuasiveness & $b = 0.06$ & .428 & No \\
+Donation amount & $b = 0.0002$ & .735 & No \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Engagement interaction}
+The interaction between gender and content source was statistically significant for engagement ($OR = 1.53$, $p = .011$).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{phase3_plots/interaction_engagement_like.png}
+    \caption{Interaction effect on engagement (Probability of 'Like')}
+    \label{fig:int_engagement}
+\end{figure}
+
+Figure \ref{fig:int_engagement} shows that the preference for LLM-generated content was stronger among women than men. The odds ratio of 1.53 indicates that the positive effect of LLM content (vs. human) on engagement is significantly larger for female participants. In this graph, the Y-axis shows the chance that a participant will choose the 'Like' rating, and the X-axis shows the content source (Human or LLM). The two lines represent men and women. Both lines go up, meaning everyone preferred the LLM content. However, the line for women is steeper than the line for men. This steeper slope shows the significant interaction I found: the boost in engagement from LLM content is bigger for women than it is for men.
+
+\subsection{Persuasiveness interaction}
+For persuasiveness, the interaction term was not statistically significant ($b = 0.06$, $p = .428$).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{phase3_plots/interaction_persuasiveness.png}
+    \caption{Interaction effect on persuasiveness}
+    \label{fig:int_persuasiveness}
+\end{figure}
+
+Figure \ref{fig:int_persuasiveness} illustrates the interaction pattern, where the Y-axis shows the persuasiveness score (1-7 scale) and the X-axis shows the content source. Both lines go up, showing that LLM content was rated higher. Although a larger gap between male and female responses appears visible for LLM-generated content, the statistical test confirms this difference is not significant. I cannot conclude the gender gap differs by content source for persuasiveness.
+
+\subsection{Donation interaction}
+The interaction effect on donation amounts among donors was not statistically significant ($b = 0.0002$, $p = .735$).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{phase3_plots/interaction_donation_fixed.png}
+    \caption{Interaction effect on donation Amount}
+    \label{fig:int_donation}
+\end{figure}
+
+This plot (Figure \ref{fig:int_donation}) shows the donation amounts for participants who chose to donate. The Y-axis is the dollar amount, and the X-axis is the content source. The female line is higher than the male line, which shows that women generally donated more. Both lines also go up for the LLM content, meaning LLM appeals led to higher donations. The lines are almost parallel, which confirms there is no significant interaction. This means the increase in donation amount from using LLM is about the same for both men and women.
+
+In summary, a significant Gender $\times$ Content source interaction was found only for engagement, showing women's preference for LLM-generated appeals is stronger than men's. For persuasiveness and donation behavior, the effect of content source did not significantly differ by gender.
+
+% Chapter 4: Discussion
+\chapter{Discussion}
+
+This study examined whether men and women respond differently to LLM-generated versus human-written donation appeals for cancer charities. Using data from 725 participants evaluating 4,350 charitable appeals, I tested whether the well-documented gender gap in charitable giving persists across different content sources. The results show a clear pattern. LLM-generated appeals outperform human-written appeals on all three outcomes. Gender moderates this effect only for immediate emotional engagement, not for persuasiveness judgments or donation behavior.
+
+\section{Main findings and interpretation}
+
+\subsection{The LLM advantage across outcomes}
+
+One of the clearest findings is that LLM-generated appeals performed better than human-written appeals on every outcome. Participants reported higher engagement, judged the appeals as more persuasive, and donated slightly more money after reading LLM-generated text. These effects remained stable after accounting for individual differences and the nested structure of the data.
+
+Recent work helps explain this pattern. Modern language models have been shown to outperform human persuaders, even when those humans are financially incentivized \citep{schoenegger2025persuasive}. This suggests that LLMs now produce a consistent level of persuasive quality that exceeds that of the average human writer. Instead of being unusual or artificial, LLM-generated messages may reflect a refined version of common persuasive techniques learned from large amounts of existing text.
+
+This interpretation fits with the idea that LLMs reliably produce clear, fluent, and structured appeals. These qualities may be enough to improve engagement and persuasion in donation contexts, even without genuine emotional experience.
+
+\subsection{Gender and content source}
+
+Gender differences appeared only at the level of immediate engagement. Women reacted more positively to LLM-generated appeals at this early stage. This difference did not appear for persuasiveness judgments or donation amounts. Specifically, the analysis did not support H1, as the interaction between gender and content source regarding perceived persuasiveness was not statistically significant.
+
+A useful explanation comes from research on fast and slow evaluation processes. First impressions of LLM-generated content are often formed through quick, automatic processing, rather than reflective evaluation \citep{li2025dualprocess}. Slower and more reflective processing is used for judgments that require evaluation or action. Engagement ratings are likely driven by these quick reactions, which are sensitive to tone and emotional smoothness. While the theoretical background in Chapter 1 suggested that women might be more skeptical of artificial emotional cues \citep{dietvorst2015algorithm}, these results indicate that the high linguistic quality of LLMs effectively bypasses this skepticism at the intuitive level.
+
+Research on LLM empathy supports this explanation. LLM-generated empathic responses often receive higher ratings for comfort, validation, and emotional understanding than human responses \citep{wenger2024aiempathy}. At the same time, people remain hesitant to seek empathy from LLM when given a choice. This pattern suggests that LLMs can trigger strong emotional reactions without fully replacing human preference at a reflective level. The discrepancy between the significant engagement ratings and the non-significant results for persuasiveness reveals a ``sincerity gap.'' Because participants were not informed of the authorship, the psychological mechanisms of algorithm aversion were likely not activated. This implies that such aversion is driven by the perceived identity of the source rather than the linguistic features of the text itself.
+
+\subsection{Gender differences in donation amounts}
+
+A familiar pattern appeared in donation behavior. Among participants who chose to donate, women gave more money than men. This difference was small but meaningful given the limited donation budget used in the experiment. The same pattern appeared for both human-written and LLM-generated appeals. Because the gender gap in giving did not change based on the source of the message, H2b was not supported.
+
+Gender did not predict whether participants donated at all. Men and women were equally likely to give something. The difference emerged only in the amount donated. This suggests that gender differences relate more to generosity than to willingness to participate. This outcome aligns with the expectation that Gilligan's \cite{gilligan1982different} ``Care'' orientation remains a robust predictor of behavior regardless of the mediator. The fact that this pattern holds for LLM-generated appeals suggests that the underlying motivations driving women's higher donations are triggered by the signals of distress within the message rather than the author's identity. Even when the appeal is generated by a machine, women's focus on the ``Harm/Care'' foundation \citep{graham2011mapping} remains the dominant driver of their prosocial behavior, as the machine-generated text successfully mimics the relational cues necessary to prompt a response.
+
+\section{Theoretical implications}
+
+These findings extend research on gender differences in prosocial behavior to settings mediated by LLMs. The psychological factors often used to explain women's higher charitable giving appear to operate even when the appeal is generated by a language model.
+
+The results also inform debates about trust in LLM-generated content. Evidence shows that LLM-generated responses can feel emotionally supportive and well-attuned. At the same time, The perceived effectiveness of an empathic response is significantly reduced when the recipient is aware the source is an LLM \citep{yin2024feelheard}. Since participants in this study were not informed about authorship, the results reflect responses to the text itself rather than attitudes toward LLM.
+
+Finally, these findings raise questions about emotional authenticity. LLM systems are capable of displaying complex emotional cues despite a lack of moral agency \citep{cuadra2024illusion}. In this study, high engagement may reflect effective emotional signaling rather than genuine concern. This does not reduce the practical effectiveness of LLM-generated appeals, but it does suggest a need for care when using simulated empathy in charitable contexts.
+
+\section{Practical implications for nonprofit organizations}
+
+For nonprofit organizations, the results suggest that LLMs can generate donation appeals that perform at least as well as human-written content. This may be especially useful for organizations with limited resources.
+
+Disclosure policies require caution. Prior research shows that labeling content as LLM-generated can reduce its impact. Organizations may face a trade-off between transparency and effectiveness.
+
+The distinction between donating at all and donation amount suggests different strategies for different goals. High-quality appeals appear sufficient to prompt donations. Increasing donation amounts may require additional approaches beyond appeal wording.
+
+
+% Chapter 5: Conclusion
+\chapter{Conclusion}
+
+This study examined whether men and women respond differently to donation requests created by LLM. I collected data from 725 participants to test if the source of the message changes how people give. The results show that LLM-generated content outperforms human-written text. Participants engaged more with the LLM messages, rated them as more persuasive, and donated larger amounts. This was true for both male and female participants.
+
+I found a gender difference in only one area. Women showed a stronger initial preference for LLM messages than men did. But this reaction did not change their judgments of persuasiveness or their final donation amounts. Women were more generous than men on average. But the difference in giving between genders was the same for human and LLM appeals.
+
+The findings indicate that gender does not limit the value of LLM in fundraising. The data did not support the idea that women would dislike artificial emotional appeals. Nonprofits can use these tools to improve outcomes without pushing away female donors. Donors respond to the quality of the content, not to the author.
+
+% Bibliography
+\bibliographystyle{apalike}
+\bibliography{references}
+
+\end{document}

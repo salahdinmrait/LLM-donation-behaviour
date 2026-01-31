@@ -1,0 +1,36 @@
+[1] "--- Donation Interaction Model (LMM on Donors) ---"
+Linear mixed model fit by REML ['lmerMod']
+Formula: donation_amount ~ gender * content_source + (1 | participant_id) +  
+    (1 | post_id)
+   Data: df_donors
+
+REML criterion at convergence: -17303.9
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-4.4196 -0.6598  0.0064  0.4948  5.5886 
+
+Random effects:
+ Groups         Name        Variance  Std.Dev.
+ participant_id (Intercept) 1.062e-03 0.032582
+ post_id        (Intercept) 1.779e-06 0.001334
+ Residual                   4.292e-05 0.006551
+Number of obs: 2816, groups:  participant_id, 646; post_id, 517
+
+Fixed effects:
+                                Estimate Std. Error t value
+(Intercept)                    0.0331498  0.0018845  17.591
+genderFemale                   0.0019534  0.0026018   0.751
+content_sourceLLM              0.0002751  0.0004113   0.669
+genderFemale:content_sourceLLM 0.0002250  0.0005313   0.423
+
+Correlation of Fixed Effects:
+            (Intr) gndrFm cn_LLM
+genderFemal -0.722              
+cntnt_srLLM -0.112  0.069       
+gndrFm:_LLM  0.073 -0.107 -0.660
+[1] "\nCoefficients:"
+                   (Intercept)                   genderFemale 
+                  0.0331497965                   0.0019534127 
+             content_sourceLLM genderFemale:content_sourceLLM 
+                  0.0002751198                   0.0002249557 

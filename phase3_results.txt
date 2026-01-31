@@ -1,0 +1,106 @@
+[1] "--- Phase 3: Interaction Analysis ---"
+[1] "\n\n--- Engagement Interaction Model ---"
+Cumulative Link Mixed Model fitted with the Laplace approximation
+
+formula: rating ~ gender * content_source + (1 | participant_id) + (1 |  
+    post_id)
+data:    df
+
+ link  threshold nobs logLik   AIC     niter     max.grad cond.H 
+ logit flexible  4350 -2931.83 5877.65 429(2783) 1.14e-03 3.7e+01
+
+Random effects:
+ Groups         Name        Variance Std.Dev.
+ participant_id (Intercept) 5.4789   2.3407  
+ post_id        (Intercept) 0.2933   0.5415  
+Number of groups:  participant_id 725,  post_id 562 
+
+Coefficients:
+                               Estimate Std. Error z value Pr(>|z|)  
+genderFemale                     0.1230     0.2179   0.565   0.5723  
+content_sourceLLM                0.2515     0.1304   1.929   0.0537 .
+genderFemale:content_sourceLLM   0.4222     0.1656   2.550   0.0108 *
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Threshold coefficients:
+                Estimate Std. Error z value
+Dislike|Neutral  -3.8093     0.1877 -20.297
+Neutral|Like     -1.1933     0.1664  -7.171
+[1] "\nOdds Ratios:"
+               Dislike|Neutral                   Neutral|Like 
+                    0.02216335                     0.30322341 
+                  genderFemale              content_sourceLLM 
+                    1.13091299                     1.28592959 
+genderFemale:content_sourceLLM 
+                    1.52530577 
+[1] "\n\n--- Persuasiveness Interaction Model ---"
+Linear mixed model fit by REML ['lmerMod']
+Formula: persuasiveness ~ gender * content_source + (1 | participant_id) +  
+    (1 | post_id)
+   Data: df
+
+REML criterion at convergence: 14240.5
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-4.6462 -0.4368  0.0734  0.5072  3.9732 
+
+Random effects:
+ Groups         Name        Variance Std.Dev.
+ participant_id (Intercept) 1.69301  1.3012  
+ post_id        (Intercept) 0.05262  0.2294  
+ Residual                   0.99788  0.9989  
+Number of obs: 4350, groups:  participant_id, 725; post_id, 562
+
+Fixed effects:
+                               Estimate Std. Error t value
+(Intercept)                     4.87531    0.07731  63.062
+genderFemale                    0.02949    0.10638   0.277
+content_sourceLLM               0.16918    0.05093   3.322
+genderFemale:content_sourceLLM  0.06449    0.06270   1.029
+
+Correlation of Fixed Effects:
+            (Intr) gndrFm cn_LLM
+genderFemal -0.688              
+cntnt_srLLM -0.330  0.181       
+gndrFm:_LLM  0.203 -0.296 -0.614
+[1] "\nCoefficients:"
+                   (Intercept)                   genderFemale 
+                    4.87530786                     0.02948656 
+             content_sourceLLM genderFemale:content_sourceLLM 
+                    0.16917771                     0.06448946 
+[1] "\n\n--- Donation Interaction Model ---"
+ Family: gaussian  ( identity )
+Formula:          
+donation_amount ~ gender * content_source + (1 | participant_id) +  
+    (1 | post_id)
+Zero inflation:                   ~gender + content_source
+Data: df
+
+      AIC       BIC    logLik -2*log(L)  df.resid 
+ -22407.1  -22343.3   11213.6  -22427.1      4340 
+
+Random effects:
+
+Conditional model:
+ Groups         Name        Variance  Std.Dev. 
+ participant_id (Intercept) 4.154e-13 6.445e-07
+ post_id        (Intercept) 1.376e-05 3.709e-03
+ Residual                   3.272e-04 1.809e-02
+Number of obs: 4350, groups:  participant_id, 725; post_id, 562
+
+Dispersion estimate for gaussian family (sigma^2): 0.000327 
+
+Conditional model:
+                                Estimate Std. Error z value Pr(>|z|)
+(Intercept)                    0.0121068        NaN     NaN      NaN
+genderFemale                   0.0003945        NaN     NaN      NaN
+content_sourceLLM              0.0009292        NaN     NaN      NaN
+genderFemale:content_sourceLLM 0.0017149        NaN     NaN      NaN
+
+Zero-inflation model:
+                  Estimate Std. Error z value Pr(>|z|)
+(Intercept)        -26.872        NaN     NaN      NaN
+genderFemale        -4.149        NaN     NaN      NaN
+content_sourceLLM   -3.049        NaN     NaN      NaN

@@ -1,0 +1,21 @@
+# R libraries (installed packages - too large)
+R_libs/
+
+# R session files
+.Rhistory
+.RData
+.Rproj.user/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
