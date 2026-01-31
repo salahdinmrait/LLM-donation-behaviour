@@ -19,3 +19,18 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+# PDFs
+*.pdf
+
+# Presentation files
+thesis_presentation.pptx
+thesis_presentation_v2.pptx
+thesis_presentation.html
+presentation_script.md
+qa_preparation_guide.md
+
+# Logo images
+tilburg-university-seeklogo.png
+TUe-logo-descriptor-line-scarlet-L.png
+TUe-logo-descriptor-stack-scarlet-L.png
